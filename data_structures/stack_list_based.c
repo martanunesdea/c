@@ -43,11 +43,26 @@ int is_stack_empty()
 
 int main()
 {
-    stack_init();
-    push(5);
-    push(7);
-    int n;
-    n = pop();
-    printf("%d \n", n);
+    char c;
+    int x;
+    for( stack_init(); scanf("%1s", &c) != EOF; )
+    {
+        x = 0;
+        if ( c == '+')
+        {
+            x = pop()+pop();
+        }
+        if ( c == '*')
+        {
+            x = pop()*pop();
+        }
+        while ( c >= '0' && c <= '9')
+        {
+            x = 10*x + (c-'0');
+            scanf("%1c", &c);
+        }
+        push(x);
+    }
+    printf("%d\n", x);
     return 0;
 }
