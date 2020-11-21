@@ -24,7 +24,17 @@ void insert_node(node **head_ref, int x)
     *head_ref = new_node;          /* head now points to newly added item */
 }
 
-node *search_list_recursively(node *l, int x)
+struct node *insert_after_node(struct node *t, int x)
+{
+    struct node *to_add;
+    to_add = (struct node*) malloc(sizeof *to_add);
+    to_add->item = x;
+    to_add->next = t->next;
+    t->next = to_add;
+    return to_add;
+}
+
+struct node *search_list_recursively(node *l, int x)
 {
     if (l == NULL)
         return(NULL);
@@ -38,7 +48,7 @@ node *search_list_recursively(node *l, int x)
     }
 }
 
-node *search_list_iteratively(node *l, int x)
+struct node *search_list_iteratively(node *l, int x)
 {
     while( l->item != x)
     {
@@ -121,5 +131,8 @@ int main(void)
     delete_node(&list, 4);
     print_list(list);
 
+    node *previous_node = search_list_iteratively(list, 3);
+    node *new_node = insert_after_node(previous_node, 10);
+    print_list(list);
 
 }
