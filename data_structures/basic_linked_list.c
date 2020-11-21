@@ -3,7 +3,7 @@
 
 struct node
 {
-    int key;
+    int item;
     struct node *next;
 };
 struct node *head, *z, *t;
@@ -25,7 +25,7 @@ int delete_node(struct node *node_to_delete)
 {
     struct node *temp = (struct node *)malloc(sizeof *temp);
     temp->next = head->next;
-    temp->key = 0;
+    temp->item = 0;
     // trasverse through linked list to find node
     while( temp->next != z)
     {
@@ -35,14 +35,14 @@ int delete_node(struct node *node_to_delete)
         }
         temp->next = temp->next->next;
     }
-    return z->key;
+    return z->item;
 }
 
 struct node *insert_after (int key_to_add, struct node *existing_node)
 {
     struct node *new_node;
     new_node = (struct node *) malloc(sizeof *new_node);
-    new_node->key = key_to_add;
+    new_node->item = key_to_add;
     new_node->next = existing_node->next; // take on existing node's pointer
     existing_node->next = new_node; // give new pointer to existing node
     return new_node;
@@ -55,7 +55,7 @@ int main(void)
     int key_to_add = 2;
     struct node *new_item = insert_after(key_to_add, head);
 
-    if( key_to_add == new_item->key )
+    if( key_to_add == new_item->item )
     {
         printf("inserted \n");
     }
