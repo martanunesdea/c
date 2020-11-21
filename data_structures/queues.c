@@ -4,6 +4,8 @@ Description: Restricted-access data structure with
 two basic operations: insert an item, remove an item.
 Items get processed in the order received (First-In First-Out)
 */
+#include <stdlib.h>
+#include <stdio.h>
 
 #define max 100
 static int queue[max+1], head, tail;
