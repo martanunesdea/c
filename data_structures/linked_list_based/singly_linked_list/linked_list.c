@@ -1,24 +1,33 @@
+/* 
+ * Implementation of methods associated with a singly linked list
+ * Author: Marta
+ * Date: 02/11/2020
+ */
 #include <stdlib.h>
 #include <stdio.h>
-
-typedef struct node {
-    int item;
-    struct node *next;
-} node;
+#include "linked_list.h"
 
 node *initialize_list()
 {
     node *head;
-    head = (struct node*) malloc(sizeof head);
-    head->item = 0;
-    head->next = NULL;
+    head = (struct node*) malloc(sizeof *head);
+    head->item = 0;     // initialize "dummy" last node to be 0
+    head->next = NULL;  // last node has a "NULL" pointer
+    return head;
+}
 
+node *initialize_circular_list(node *head, node *tail)
+{
+    head = (struct node*) malloc(sizeof *head);
+    tail = (struct node*) malloc(sizeof *tail);
+    head->next = tail; // when it comes to end, head points to the tail 
+    tail->next = head;
     return head;
 }
 
 void insert_node(node **head_ref, int x)
 {
-    node *new_node = (struct node*) malloc(sizeof new_node);         /* temporary pointer */
+    node *new_node = (struct node*) malloc(sizeof *new_node);         /* temporary pointer */
     new_node->item = x;     /* initialise new node with an "item" */
     new_node->next = *head_ref;    /* initialise new node with a "next" pointer */
     *head_ref = new_node;          /* head now points to newly added item */
@@ -64,7 +73,7 @@ struct node *search_list_iteratively(node *l, int x)
 
 void delete_node(node **l, int x)
 {
-    /* defensive programming - check if node exists in list 
+    /* Defensive programming - check if node exists in list 
     node node_to_delete = search_list_iteratively(*l, x);
     if (node_to_delete == NULL)
     {
@@ -84,10 +93,11 @@ void delete_node(node **l, int x)
 
     while( temp != NULL && temp->item != x)
     {
-        previous_node = temp;
-        temp = temp->next;
+        previous_node = temp;   // Keep track of previous node
+        temp = temp->next;      // Trasverse through list
         if( temp->next == NULL)
-        {
+        {   
+            // Reached the end of list
             printf("Error: Node not found in list.\n");
             return;
         }
@@ -100,39 +110,11 @@ void delete_node(node **l, int x)
 
 void print_list(node *node_ref)
 {
-    printf("\nList ---------- \n");
+    printf("\n List ---------- \n");
     while (node_ref != NULL) 
     { 
         printf(" %d \n", node_ref->item); 
         node_ref = node_ref->next; 
     } 
     printf("\n");
-}
-
-int main(void)
-{
-    node *list = initialize_list();
-    
-    insert_node(&list, 1);
-    insert_node(&list, 2);
-    insert_node(&list, 3);
-    insert_node(&list, 4);
-    print_list(list);
-
-   // node *to_find = search_list_iteratively(list, 2);
-   // printf("node next to 2: %d", to_find->next->item);
-
-    //node *temp = get_previous_node(list, 2);
-    //printf("node previous to 2 is %d", temp->item);
-
-    delete_node(&list, 2);
-    print_list(list);
-
-    delete_node(&list, 4);
-    print_list(list);
-
-    node *previous_node = search_list_iteratively(list, 3);
-    node *new_node = insert_after_node(previous_node, 10);
-    print_list(list);
-
 }
