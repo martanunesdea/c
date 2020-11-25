@@ -8,13 +8,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#define PQ_SIZE 100
-
-typedef struct {
-    int q[PQ_SIZE+1];     /* body of queue */
-    int n;                /* number of queue elements */
-} priority_queue;
+#include "heap.h"
 
 void pq_init(priority_queue *q)
 {
@@ -138,31 +132,10 @@ void my_heap_sort(int s[], int n)
 
     make_heap(&q, s, n);
     print_heap(&q, n);
-    
     for (i = 0; i < n; i++)
     {
         s[i] = extract_min(&q);
     }
 
     print_heap(&q, n);
-}
-
-int main(void)
-{
-    priority_queue *q;
-    q = (priority_queue*) malloc(sizeof q);
-    
-    const int array_size = 5;
-    int s[array_size] = {23, 32, 10, 21, 19};
-    
-    make_heap(q, s, array_size);
-    print_heap(q, array_size);
-
-    extract_min(q);
-    print_heap(q, 4);
-
-    int array[5] = {3, 5, 6, 1, 9};
-    my_heap_sort(array, 5);
-
-    return 0;
 }
