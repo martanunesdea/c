@@ -66,9 +66,52 @@ void pq_insert(priority_queue *q, int x)
     }
 }
 
+void bubble_down(priority_queue *q, int p)
+{
+    int c;          /* child index */
+    int i;          /* counter */
+    int min_index;  /* index of lightest child */
+
+    c = pq_young_child(p);
+    min_index = p;
+
+    for( i = 0; i <= 1; i++)
+    {
+        if ( (c+i) <= q->n)
+        {
+            if ( q->q[min_index] > q->q[c+i])
+                min_index = c+i;
+        }
+    }
+
+    if (min_index != p)
+    {
+        pq_swap(q,p,min_index);
+        bubble_down(q, min_index);
+    }
+
+}
+
+int extract_min(priority_queue *q)
+{
+    int min = -1;
+    if (q->n <= 0)
+    {
+        printf("Warning: empty priority queue. \n");
+    }
+    else
+    {
+        min = q->q[1];
+        q->q[1] = q->q[ q-> n];
+        q->n = q->n - 1;
+        bubble_down(q, 1);
+    }
+    return min; 
+}
+
 void make_heap(priority_queue *q, int s[], int n)
 {
-    int i;      /* counter */
+    int i;              /* counter */
     pq_init(q);
     for(int i = 0; i < n; i++)
     {
@@ -76,12 +119,32 @@ void make_heap(priority_queue *q, int s[], int n)
     }
 }
 
+
 void print_heap(priority_queue *q, int n)
 {
+    printf("\n\n -----  Heap ------ \n");
     for(int i = 0; i < n; i++)
     {
-        printf(" %d \n", q->q[i+1]);
+        printf("\t %d \n", q->q[i+1]);
     }
+    printf("\n ----------------- \n");
+}
+
+
+void my_heap_sort(int s[], int n)
+{
+    int i;              /* counters */
+    priority_queue q;   /* heap for heapsort */
+
+    make_heap(&q, s, n);
+    print_heap(&q, n);
+    
+    for (i = 0; i < n; i++)
+    {
+        s[i] = extract_min(&q);
+    }
+
+    print_heap(&q, n);
 }
 
 int main(void)
@@ -89,11 +152,17 @@ int main(void)
     priority_queue *q;
     q = (priority_queue*) malloc(sizeof q);
     
-    int array_size = 4;
-    int s[4] = {23, 32, 18, 19};
+    const int array_size = 5;
+    int s[array_size] = {23, 32, 10, 21, 19};
     
     make_heap(q, s, array_size);
     print_heap(q, array_size);
+
+    extract_min(q);
+    print_heap(q, 4);
+
+    int array[5] = {3, 5, 6, 1, 9};
+    my_heap_sort(array, 5);
 
     return 0;
 }
