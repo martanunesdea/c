@@ -8,32 +8,16 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-
-// TODO: add queue header and source files to directory
-
-
-mergesort(int s[], int low, int high)
-{
-    int i;
-    int middle;
-
-    if (low < high)
-    {
-        middle = (low + high)/2;
-        mergesort(s, low, middle);
-        mergesort(s, middle+1, high);
-        merge(s, low, middle, high);
-    }
-}
+#include "queue.h"
 
 /* To merge
  * avoid losing an element by overwriting it
  * first, copy each subarray to a separate queue
  * and merge these elements back into the array */
-merge(int s[], int low, int middle, int high)
+void merge(int s[], int low, int middle, int high)
 {
     int i;
-    queue buffer1, buffer2;
+    struct queue buffer1, buffer2;
 
     init_queue(&buffer1);
     init_queue(&buffer2);
@@ -61,3 +45,33 @@ merge(int s[], int low, int middle, int high)
     while( !empty_queue(&buffer2))
         s[i++] = dequeue(&buffer2);
 } 
+
+void my_merge_sort(int s[], int low, int high)
+{
+    int i;
+    int middle;
+
+    if (low < high)
+    {
+        middle = (low + high)/2;
+        my_merge_sort(s, low, middle);
+        my_merge_sort(s, middle+1, high);
+        merge(s, low, middle, high);
+    }
+    
+    printf(" \n ----------------- \n");
+    for( int j = 0; j < 4; j++)
+    {
+        printf(" %d \n", s[j]);
+    }
+
+}
+
+int main(void)
+{
+
+    int s[4] = {1, 6, 4, 3};
+    my_merge_sort(s, 1, 6);
+
+    return 0;
+}
