@@ -4,6 +4,7 @@
  *        Section: Mergesort/Sorting
  *         Author: Marta
  *           Date: 22/11/2020
+ *       Compiler:  clang-1103.0.32.62 
  */
 #include <stdlib.h>
 #include <stdio.h>
