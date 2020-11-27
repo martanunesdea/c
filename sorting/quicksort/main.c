@@ -9,48 +9,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void swap(int *a, int *b)
+void swap(int* a, int* b)
 {
-    int *temp = a;
-    a = b;
-    b = a;
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
 
 
-int partition(int s[], int l, int h)
+int partition(int s[], int low, int high)
 {
-    int i;          /* counter */
-    int p;          /* pivot element index */
-    int firsthigh;  /* divider position for pivot element */
+    int pivot = s[high];  /* pivot, element to be placed at right-most position */
+    int lower = low - 1; /* index of smaller element */
 
-    p = h;
-    firsthigh = l;
-    for ( i = l; i < h; i++)
+    for ( int i = low; i <= high - 1; i++)
     {
-        if (s[i] < s[p])
+        /* if current element is smaller than the pivot */
+        if (s[i] < pivot)
         {
-            swap(&s[i], &s[firsthigh]);
-            firsthigh++;
+            lower++;
+            swap(&s[lower], &s[i]);
         }
     }
-    swap(&s[p], &s[firsthigh]);
+    swap(&s[lower+1], &s[high]);
 
-    return(firsthigh);
+    return(lower+1);
 }
 
 void my_quick_sort(int s[], int l, int h)
 {
     int p;      /* index of partition */
 
-    if ( (h-l) > 0 )
+    if ( l < h )  /* check pointers haven't crossed */
     {
         p = partition(s, l, h);
         my_quick_sort(s, l, p-1);
         my_quick_sort(s, p+1, h);
     }
 
+
+}
+
+void print_array(int s[], int size)
+{
     printf(" \n ----------------- \n");
-    for( int j = 0; j < 4; j++)
+    for( int j = 0; j < size; j++)
     {
         printf(" %d \n", s[j]);
     }
@@ -58,9 +61,10 @@ void my_quick_sort(int s[], int l, int h)
 
 int main(void)
 {
-    int s[4] = {1, 2, 5, 3};
+    int s[] = {22, 7, 5, 3};
+    int size = sizeof(s)/sizeof(s[0]);
 
-    my_quick_sort(s, 1, 5);
-
+    my_quick_sort(s, 0, size-1);
+    print_array(s, size);
     return 0;
 }
