@@ -16,34 +16,50 @@
  * and merge these elements back into the array */
 void merge(int s[], int low, int middle, int high)
 {
-    int i;
-    struct queue buffer1, buffer2;
-
-    init_queue(&buffer1);
-    init_queue(&buffer2);
-
-    for( i = low; i <= middle; i++)
-    {
-        enqueue(&buffer1, s[i]);
+    int i, j, k;
+    int n1 = middle - low + 1;
+    int n2 = high - middle;
+ 
+    /* create temp arrays */
+    int L[n1], R[n2];
+ 
+    /* Copy data to temp arrays L[] and R[] */
+    for (i = 0; i < n1; i++)
+        L[i] = s[low + i];
+    for (j = 0; j < n2; j++)
+        R[j] = s[middle + 1 + j];
+ 
+    /* Merge the temp arrays back into s[low..high]*/
+    i = 0; // Initial index of first subarray
+    j = 0; // Initial index of second subarray
+    k = low; // Initial index of merged subarray
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            s[k] = L[i];
+            i++;
+        }
+        else {
+            s[k] = R[j];
+            j++;
+        }
+        k++;
     }
-    for( i = middle+1; i <= high; i++)
-    {
-        enqueue(&buffer2, s[i]);
+ 
+    /* Copy the remaining elements of L[], if there
+    are any */
+    while (i < n1) {
+        s[k] = L[i];
+        i++;
+        k++;
     }
-
-    i = low;
-    while( !(empty_queue(&buffer1) || empty_queue(&buffer2)))
-    {
-        if (headq(&buffer1) <= headq(&buffer2))
-            s[i++] = dequeue(&buffer1);
-        else
-            s[i++] = dequeue(&buffer2);
+ 
+    /* Copy the remaining elements of R[], if there
+    are any */
+    while (j < n2) {
+        s[k] = R[j];
+        j++;
+        k++;
     }
-
-    while( !empty_queue(&buffer1))
-        s[i++] = dequeue(&buffer1);
-    while( !empty_queue(&buffer2))
-        s[i++] = dequeue(&buffer2);
 } 
 
 void my_merge_sort(int s[], int low, int high)
@@ -58,20 +74,29 @@ void my_merge_sort(int s[], int low, int high)
         my_merge_sort(s, middle+1, high);
         merge(s, low, middle, high);
     }
-    
-    printf(" \n ----------------- \n");
-    for( int j = 0; j < 4; j++)
-    {
-        printf(" %d \n", s[j]);
-    }
+}
 
+void print_array(int s[], int size)
+{
+    printf("\n ---- Array ---- \n");
+    for( int i = 0; i < size; i++)
+    {
+        printf(" %d \n", s[i]);
+    }
 }
 
 int main(void)
 {
 
     int s[4] = {1, 6, 4, 3};
-    my_merge_sort(s, 1, 6);
+    int size = sizeof(s)/sizeof(s[0]);
 
+    printf("\nInput array: ");
+    print_array(s, size);
+    my_merge_sort(s, 0, size - 1);
+
+    printf("\nOutput array: ");
+    print_array(s, size);
+    
     return 0;
 }
