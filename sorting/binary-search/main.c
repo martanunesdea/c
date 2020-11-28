@@ -10,18 +10,18 @@
 #include <stdlib.h>
 int binary_search(int s[], int key, int low, int high)
 {
-    int middle; /* index of middle element */
-
     if ( low > high )
     {
         /* key not found */
         return -1; 
     }
-    int middle = (low + high) / 2;
-    
+    int middle = (low + high) / 2; /* index of middle element */
+
     if ( s[middle] == key )
+    {
         return(middle);
-    
+    }
+
     if ( s[middle] > key)
         return( binary_search(s, key, low, middle-1) );
     else
@@ -31,5 +31,15 @@ int binary_search(int s[], int key, int low, int high)
 
 int main(void)
 {
+    
+    int s[5] = {1, 2, 4, 5, 6}; // sorted array
+
+    int key_to_find = 5;
+    int size = sizeof(s)/sizeof(s[0]);
+    int starting_element = 0;
+
+    int value = binary_search(s, key_to_find, starting_element, size-1);
+    printf("Place of %d is %d \n", key_to_find, value);
+
     return 0;
 }
