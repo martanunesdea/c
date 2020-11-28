@@ -139,6 +139,36 @@ void process_edge(int x, int y)
     nedges += 1; // get accurate count of number of edges
 }
 
+
+void connected_components(graph *g)
+{
+    initialize_search(g);
+    int c = 0;
+    for (int i = 0; i <= g->nvertices; i++)
+    {
+        if( discovered[i] == FALSE)
+        {
+            c += 1;
+            printf("Component %d:", c);
+            bfs(g, i);
+            printf("\n");
+        }
+    }
+}
+
+/* for connected components we would need helper functions */ 
+void process_vertex_early(int v)
+{
+    printf(" %d \n", v);
+}
+
+void process_edge(int x, int y)
+{
+    // deliberately empty
+}
+
+/* add two-color solution here */
+
 void bfs(graph *g, int start)
 {
     queue q;
