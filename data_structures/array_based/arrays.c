@@ -22,5 +22,4 @@ int main(void)
         if (a[i]) printf("%d \n", i);   
     }*/
 
-
 }
