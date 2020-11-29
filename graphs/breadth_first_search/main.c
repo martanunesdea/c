@@ -136,7 +136,7 @@ void process_vertex_early(int v)
 void process_edge(int x, int y)
 {
     printf("processed edge (%d, %d) \n", x, y);
-    nedges += 1; // get accurate count of number of edges
+    // nedges += 1; // get accurate count of number of edges
 }
 
 
