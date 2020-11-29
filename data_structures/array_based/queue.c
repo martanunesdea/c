@@ -38,3 +38,8 @@ int is_queue_empty(void)
 {
     return head == tail;
 }
+
+int main(void)
+{
+    return 0;
+}

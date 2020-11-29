@@ -8,9 +8,20 @@ struct stack {
     int ptr;
 };
 
+
+int is_stack_empty(struct stack *s)
+{
+    return( !(s->ptr));
+}
+
+int is_stack_full(struct stack *s)
+{
+    return( (s->ptr) == max);
+}
+
 int push(struct stack *s, int v)
 {
-    if ( s->ptr < max )
+    if ( !is_stack_full(s) )
     {
         s->ptr += 1;
         s->stack[s->ptr] = v;
@@ -18,7 +29,7 @@ int push(struct stack *s, int v)
     }
     else 
     {
-        printf("\nStack full. Aborting\n");
+        printf("\nError: Stack full. Aborting.\n");
         return 1;
     }
 
@@ -26,10 +37,18 @@ int push(struct stack *s, int v)
 
 int pop(struct stack *s)
 {
+    // check pointer is within bounds
+    if ( is_stack_empty(s) )
+    {
+        printf("\nError: Reached end of stack.\n");
+        return (-1);
+    }
+
     // retrieve item at the top
     int value = s->stack[s->ptr];
     // subtract pointer
     s->ptr -= 1;
+
     return value;
 }
 
@@ -41,12 +60,20 @@ void stack_init(struct stack *s)
     s->ptr = 0;
 }
 
-int is_stack_empty(struct stack *s)
+int test_stack_empty(struct stack *s)
 {
-    return( !(s->ptr));
+    if( is_stack_empty(s) == 1)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+    
 }
 
-int test_stack(struct stack *s, int n)
+int test_stack_push(struct stack *s, int n)
 {
     int i = 0;
     int error = 0;
@@ -54,36 +81,55 @@ int test_stack(struct stack *s, int n)
     {
         error = push(s, i);
         if( !error)
-            printf("\n inserted: %d ", i);
             i++;
     }
     return error;
+}
+
+int test_stack_pop(struct stack *s, int n)
+{
+    int i;
+    int error = 0;
+    for (int i = 0; i < n; i++)
+    {
+        error = pop(s);
+        if ( error == (-1))
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int main(void)
 {
     struct stack *s;
     stack_init(s);
-    int error = 0;
-    if( is_stack_empty(s) )
+
+    if (s == NULL)
     {
-        printf("Stack has been initiated but it's empty \n");
+        printf("\nError: Stack is null\n");
     }
-    error = push(s, 5);
-    error = push(s, 8);
-    if( push(s, 8) != 0)
+    else
     {
-        printf("\nError \n");
-    }
-    else 
-    {
-        printf("Popping one item: %d \n", pop(s));
+        printf("\nStack initialised\n");
     }
 
-
-    if( test_stack(s, 100) == 0)
+    if( test_stack_empty(s) == 0 )
     {
-        printf("\n\nTest passed\n");
+        printf("\nPassed test: Empty stack\n");
+    }
+
+    int items_to_push = 2;            // set to max+1 to test for overflow
+    int items_to_pop = items_to_push; // add 1 to test for overflow
+
+    if( test_stack_push(s, items_to_push) == 0)
+    {
+        printf("\nPassed test: Stack push\n");
+    }
+    if( test_stack_pop(s, items_to_pop) == 0)
+    {
+        printf("\nPassed test: Stack pop \n");
     }
 
 
