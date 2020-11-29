@@ -10,17 +10,19 @@
 #include <stdio.h>
 #include <string.h>
 #define max 100
+#define NOK 1
+#define OK 0
 
 struct stack {
     int stack[max+1];
     int ptr;
 };
 
-int is_stack_empty(struct stack *s);
-int is_stack_full(struct stack *s);
-int push(struct stack *s, int v);
-int pop(struct stack *s);
-void stack_init(struct stack *s);
+int stack_empty(struct stack *s);
+int stack_full(struct stack *s);
+void stack_initialiase(struct stack *s);
+int stack_push(struct stack *s, int v);
+int stack_pop(struct stack *s);
 int test_stack_empty(struct stack *s);
 int test_stack_push(struct stack *s, int n);
 int test_stack_pop(struct stack *s, int n);

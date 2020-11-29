@@ -20,5 +20,5 @@ struct queue {
 int put(struct queue *buffer, int new_value);
 int get(struct queue *buffer);
 void init_queue(struct queue *buffer);
-int is_queue_empty(struct queue *buffer);
+int queue_empty(struct queue *buffer);
 int get_queue_head(struct queue *buffer);

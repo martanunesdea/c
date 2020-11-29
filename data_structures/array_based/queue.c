@@ -27,28 +27,38 @@ void init_queue(struct queue *buffer)
 int put(struct queue *buffer, int new_value)
 {
     buffer->queue[buffer->tail] = new_value;
-    buffer->tail += 1;
-
-    if (buffer->tail > max)
+    if (buffer->tail == max)
     {
         printf("\nError: Queue is full\n");
-        return 1;
+        return NOK;
     }
-    return 0;
+    else
+    {
+        buffer->tail += 1;
+    }
+    return OK;
 }
+
 int get(struct queue *buffer)
 {
-    int top = buffer->queue[buffer->head];
-    buffer->queue[buffer->head] = buffer->queue[(buffer->head)+1];
-    if (buffer->head > max)
+    int head = buffer->queue[buffer->head];
+
+    if (buffer->head == max)
     {
         printf("\nError: Queue is full\n");
+        // assume queue stores positives only
+        // signal there was error with -1
         return (-1);
     }
-    return top;
+    else
+    {
+        buffer->head += 1;
+    }    
+
+    return head;
 }
 
-int is_queue_empty(struct queue *buffer)
+int queue_empty(struct queue *buffer)
 {
     return buffer->head == buffer->tail;
 }
@@ -64,7 +74,11 @@ int get_queue_tail(struct queue *buffer)
 
 int test_queue_empty(struct queue *buffer)
 {
-    return OK;
+    if( queue_empty(buffer) )
+        return OK;
+    else
+        return NOK;
+    
 }
 
 int test_queue_puts(struct queue *buffer, int item_total)
@@ -96,21 +110,20 @@ int main(void)
     struct queue *buffer;
     buffer = (struct queue*) malloc(sizeof *buffer); 
     init_queue(buffer);
-    //put(buffer, 1);
-    //put(buffer, 2);
-    int error = put(buffer, 3);
-    int value = get(buffer);
-    printf("value at front of queue %d \n", value);
 
-    int items_to_put = 90;
+    int items_to_put = 100;
     int items_to_get = items_to_put;
     
+    if( test_queue_empty(buffer) == OK)
+    {
+        printf("\nPassed: test_queue_empty\n");
+    }
     if( test_queue_puts(buffer, items_to_put) == OK)
     {
         printf("\nPassed: test_queue_puts\n");
     }
-    if( test_queue_gets(buffer, 104) == OK)
+    if( test_queue_gets(buffer, items_to_get) == OK)
     {
         printf("\nPassed: test_queue_gets\n");
-    }
+    } 
 }

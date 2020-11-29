@@ -11,21 +11,20 @@
 #include <stdio.h>
 #include <string.h>
 #include "stack.h"
-#define max 100
 
-int is_stack_empty(struct stack *s)
+int stack_empty(struct stack *s)
 {
     return( !(s->ptr));
 }
 
-int is_stack_full(struct stack *s)
+int stack_full(struct stack *s)
 {
     return( (s->ptr) == max);
 }
 
-int push(struct stack *s, int v)
+int stack_push(struct stack *s, int v)
 {
-    if ( !is_stack_full(s) )
+    if ( !stack_full(s) )
     {
         s->ptr += 1;
         s->stack[s->ptr] = v;
@@ -39,10 +38,10 @@ int push(struct stack *s, int v)
 
 }
 
-int pop(struct stack *s)
+int stack_pop(struct stack *s)
 {
     // check pointer is within bounds
-    if ( is_stack_empty(s) )
+    if ( stack_empty(s) )
     {
         printf("\nError: Reached end of stack.\n");
         return (-1);
@@ -56,7 +55,7 @@ int pop(struct stack *s)
     return value;
 }
 
-void stack_init(struct stack *s)
+void stack_initialiase(struct stack *s)
 {
     // set contents of stack to 0
     memset(s, 0, sizeof(struct stack));
@@ -66,13 +65,13 @@ void stack_init(struct stack *s)
 
 int test_stack_empty(struct stack *s)
 {
-    if( is_stack_empty(s) == 1)
+    if( stack_empty(s) == 1)
     {
-        return 0;
+        return OK;
     }
     else
     {
-        return 1;
+        return NOK;
     }
     
 }
@@ -81,13 +80,13 @@ int test_stack_push(struct stack *s, int item_total)
 {
     int i = 0;
     int error = 0;
-    while( i < item_total && error == 0)
+    for( int i = 0; i < item_total; i++)
     {
-        error = push(s, i);
-        if( !error)
-            i++;
+        error = stack_push(s, i);
+        if (error)
+            return NOK;
     }
-    return error;
+    return OK;
 }
 
 int test_stack_pop(struct stack *s, int n)
@@ -96,20 +95,23 @@ int test_stack_pop(struct stack *s, int n)
     int error = 0;
     for (int i = 0; i < n; i++)
     {
-        error = pop(s);
+        error = stack_pop(s);
         if ( error == (-1))
         {
-            return 1;
+            return NOK;
         }
     }
-    return 0;
+    return OK;
 }
 
 int main(void)
 {
     struct stack *s;
-    stack_init(s);
+    /* defining test inputs */
+    int items_to_push = 2;            /* set to max+1 to test for overflow  */
+    int items_to_pop = items_to_push; /* add 1 to test for overflow         */
 
+    stack_initialiase(s);
     if (s == NULL)
     {
         printf("\nError: Stack is null\n");
@@ -119,22 +121,17 @@ int main(void)
         printf("\nStack initialised\n");
     }
 
-    if( test_stack_empty(s) == 0 )
+    if( test_stack_empty(s) == OK )
     {
         printf("\nPassed test: Empty stack\n");
     }
 
-    int items_to_push = 2;            // set to max+1 to test for overflow
-    int items_to_pop = items_to_push; // add 1 to test for overflow
-
-    if( test_stack_push(s, items_to_push) == 0)
+    if( test_stack_push(s, items_to_push) == OK)
     {
         printf("\nPassed test: Stack push\n");
     }
-    if( test_stack_pop(s, items_to_pop) == 0)
+    if( test_stack_pop(s, items_to_pop) == OK)
     {
         printf("\nPassed test: Stack pop \n");
     }
-
-
 }
