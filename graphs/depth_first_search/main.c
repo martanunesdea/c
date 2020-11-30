@@ -63,7 +63,7 @@ void dfs(graph *g, int v)
 /* this cycle detection depends on
  * processing each undirected edge exactly once. 
  * Other wise a spurious tw-vertex cycle 
- * could be composed from 2 traversals */ 
+ * could be composed from 2 traversals of any single undirected edge */ 
 process_edge(int x, int y)
 {
     if (parent[x] != y)
@@ -71,7 +71,7 @@ process_edge(int x, int y)
         printf("Cyclefrom %d to %d: ", y, x);
         printf("\n\n");
         find_path(y, x, parent);
-        finished = TRUE;
+        finished = TRUE; // use this flag to terminate after finding the cycle
     }
 }
 
