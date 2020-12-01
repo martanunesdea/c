@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h> 
+#include "queue.h"
+#include "bfs.h"
 
 #define MAX 1000
 #define TRUE 1
@@ -24,99 +26,71 @@ bool processed[MAX+1];      /* vertices that have been processed */
 bool discovered[MAX+1];     /* vertices that have been found */
 int parent[MAX+1];          /* discovery relation */
 
-typedef struct {
-    int y;
-    int weight;
-    struct edgenode *next;
-} edgenode;
-
-typedef struct {
-    struct edgenode *edges[MAX+1];
-    int degree[MAX+1];
-    int nvertices;
-    int nedges;
-    bool directed;
-} graph;
-
 
 /* a typical graph format consists of an initial line featuring
  * the number of vertices and edges in the graph
  * followed by a listing of the edges at one vertex per line */
-void initialize_graph(graph *g, bool directed)
+
+struct adj_node* graph_create_new_adj_node(int dest)
 {
-    g->nvertices = 0;
-    g->nedges = 0;
-    g->directed = directed;
-    
-    for( int i = 0; i <= MAX; i++)
-    {
-        g->degree[i] = 0;
-        g->edges[i] = NULL;
-    }
+    struct adj_node* new_node = (struct adj_node*)malloc(sizeof(struct adj_node));
+    new_node->dest = dest;
+    new_node->next = NULL;
+    return new_node;
 }
 
-void insert_edge(graph *g, int vertex, int edge, bool directed)
+struct graph* graph_initialize(int n_vertices)
 {
-    edgenode *p;
-    p = malloc(sizeof(edgenode));
-    p->weight = 0;
-    p->y = edge;
-    p->next = g->edges[vertex];
+    struct graph* g = (struct graph*) malloc(sizeof(struct graph));
+    g->n_vertices = n_vertices;
+    g->array = (struct adj_list*) malloc(n_vertices * sizeof(struct adj_list));
 
-    g->edges[vertex] = p; /* insert at head of list */
-    g->degree[vertex] += 1;
-
-    if (directed == FALSE)
+    // initialise each list as empty
+    for (int i = 0; i < n_vertices; i++)
     {
-        insert_edge(g, vertex, edge, TRUE);
+        g->array[i].head = NULL;
     }
-    else
-    {
-        g->nedges += 1;
-    }
+    return g;
 }
 
-void read_graph(graph *g, bool directed)
-{
-    int n_edges, vertex, edge;
-
-    initialize_graph(g, directed);
-    printf("\n insert vertex and edge > ");
-    scanf(" %d %d \n", &(g->nvertices), &n_edges);
-
-    for(int i = 0; i <= n_edges; i++)
-    {
-        scanf("%d %d", &vertex, &edge);
-        insert_edge(g, vertex, edge, directed);
-    }
-
-}
-
-void print_graph( graph *g)
-{
-    edgenode *p;
-    
-    for( int i = 0; i <= g->nvertices; i++)
-    {
-        printf(" %d: ", i);
-        p = g->edges[i];
-        while( p != NULL)
-        {
-            printf(" %d", p->y);
-            p = p->next;
-        }
-        printf("\n");
-    }
+void graph_insert_edge(struct graph* g, int src, int dest) 
+{ 
+    // Initialise new node and set adjacency to current head 
+    struct adj_node* new_node = graph_create_new_adj_node(dest); 
+    new_node->next = g->array[src].head; 
+    g->array[src].head = new_node; 
+  
+    // Undirected graph: add edge from dest to src 
+    new_node = graph_create_new_adj_node(src); 
+    new_node->next = g->array[dest].head; 
+    g->array[dest].head = new_node; 
+} 
+ 
+void graph_print(struct graph* g) 
+{ 
+    int v; 
+    for (v = 0; v < g->n_vertices; ++v) 
+    { 
+        struct adj_node* p = g->array[v].head; 
+        printf("\n Adjacency list of vertex %d\n head ", v); 
+        while (p) 
+        { 
+            printf("-> %d", p->dest); 
+            p = p->next; 
+        } 
+        printf("\n"); 
+    } 
 }
 
 
-void initialize_search(graph *g)
+void initialize_search(struct graph *g)
 {
-    for (int i = 0; i <= g->nvertices; i++)
+    for (int i = 0; i <= g->n_vertices; i++)
     {
         processed[i] = discovered[i] = FALSE;
         parent[i] = -1;
     }
+    printf("initialized search\n");
 }
 
 /* through the processs functions, can customize what the traversal does 
@@ -130,21 +104,23 @@ void process_vertex_late( int v )
 
 void process_vertex_early(int v)
 {
-    printf("processed vertex %d \n", v);
+    printf("1. Discovering vertex %d \n", v);
 }
+
 
 void process_edge(int x, int y)
 {
-    printf("processed edge (%d, %d) \n", x, y);
+    printf("2. Processing adjacent vertex: %d \n", y);
+    printf("3. Processed edge (%d, %d) \n", x, y);
     // nedges += 1; // get accurate count of number of edges
 }
 
 
-void connected_components(graph *g)
+void connected_components(struct graph *g)
 {
     initialize_search(g);
     int c = 0;
-    for (int i = 0; i <= g->nvertices; i++)
+    for (int i = 0; i <= g->n_vertices; i++)
     {
         if( discovered[i] == FALSE)
         {
@@ -156,7 +132,7 @@ void connected_components(graph *g)
     }
 }
 
-/* for connected components we would need helper functions */ 
+/* for connected components we would need helper functions  
 void process_vertex_early(int v)
 {
     printf(" %d \n", v);
@@ -165,50 +141,82 @@ void process_vertex_early(int v)
 void process_edge(int x, int y)
 {
     // deliberately empty
-}
+}*/
 
 /* add two-color solution here */
 
-void bfs(graph *g, int start)
+void bfs(struct graph *g, int start)
 {
-    queue q;
+    struct queue q;
     int current_vertex;
     int next_vertex;
-    edgenode *p;
+    struct adj_node *p;
 
-    init_queue(&q);
-    enqueue(&q, start);
+    initialize_search(g);
+    queue_initialize(&q);
+    queue_put(&q, start);
     discovered[start] = TRUE;
 
-    while( !empty_queue(&q) )
+    while( !queue_empty(&q) )
     {
-        current_vertex = dequeue(&q);
+        current_vertex = queue_get(&q);
         process_vertex_early(current_vertex);
         processed[current_vertex] = TRUE;
-        p = g->edges[current_vertex];
+
+        p = g->array[current_vertex].head;
+
         while ( p != NULL )
         {
-            next_vertex = p->y;
-            if ( (processed[next_vertex] == FALSE) 
-                || g->directed )
+
+            next_vertex = p->dest;
+
+            if ( (processed[next_vertex]) == FALSE )
             {
                 process_edge(current_vertex, next_vertex);
             }
-            if( discovered[next_vertex] == FALSE) {
-                enqueue(&q, next_vertex);
+            if( (discovered[next_vertex]) == FALSE) 
+            {
+                queue_put(&q, next_vertex);
                 discovered[next_vertex] = TRUE;
                 parent[next_vertex] = current_vertex; 
             }
-            p = p->next;
+            if ( p->next == NULL )
+            {
+                break;
+            }
+            else 
+            {
+                p = p->next;
+            }
+            printf("\t New adjacent vertex is %d \n", p->dest);
+
         }
+        printf("\n \n");
         process_vertex_late(current_vertex);
     }
 }
 
 int main(void)
-{   graph *g;
+{   struct graph *g;
     g = (struct graph*) malloc(sizeof *g);
-    bool directed = TRUE;
 
-    read_graph(g, directed);
+    // initialise graph object
+    int vertices = 5; 
+    g = graph_initialize(vertices); 
+    
+    graph_insert_edge(g, 0, 1);
+    graph_insert_edge(g, 0, 4);
+    graph_insert_edge(g, 1, 2);
+    graph_insert_edge(g, 1, 4);
+
+    // print the adjacency list representation of the above graph 
+    graph_print(g); 
+  
+    printf("\n\n breadth first search: \n\n");
+    bfs(g, 1);
+
+
+    return 0; 
+
+
 }

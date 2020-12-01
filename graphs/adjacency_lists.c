@@ -1,7 +1,7 @@
 /* 
- *      Title:  Graphs source file
+ *      Title:  Adjacency lists source file
  *    Section:  Graphs
- *    Summary:  Implementing adjacency lists and adjacency matrices
+ *    Summary:  Implementing adjacency lists
  *     Author:  Marta Nunes de Abreu
  *       Date:  21/11/2020
  *   Compiler:  clang-1103.0.32.62 
