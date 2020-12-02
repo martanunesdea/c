@@ -17,71 +17,6 @@
 #include "queue.h"
 #include "bfs.h"
 
-#define MAX 1000
-#define TRUE 1
-#define FALSE 0
-
-/* for BFS */
-bool processed[MAX+1];      /* vertices that have been processed */
-bool discovered[MAX+1];     /* vertices that have been found */
-int parent[MAX+1];          /* discovery relation */
-
-
-/* a typical graph format consists of an initial line featuring
- * the number of vertices and edges in the graph
- * followed by a listing of the edges at one vertex per line */
-
-struct adj_node* graph_create_new_adj_node(int dest)
-{
-    struct adj_node* new_node = (struct adj_node*)malloc(sizeof(struct adj_node));
-    new_node->dest = dest;
-    new_node->next = NULL;
-    return new_node;
-}
-
-struct graph* graph_initialize(int n_vertices)
-{
-    struct graph* g = (struct graph*) malloc(sizeof(struct graph));
-    g->n_vertices = n_vertices;
-    g->array = (struct adj_list*) malloc(n_vertices * sizeof(struct adj_list));
-
-    // initialise each list as empty
-    for (int i = 0; i < n_vertices; i++)
-    {
-        g->array[i].head = NULL;
-    }
-    return g;
-}
-
-void graph_insert_edge(struct graph* g, int src, int dest) 
-{ 
-    // Initialise new node and set adjacency to current head 
-    struct adj_node* new_node = graph_create_new_adj_node(dest); 
-    new_node->next = g->array[src].head; 
-    g->array[src].head = new_node; 
-  
-    // Undirected graph: add edge from dest to src 
-    new_node = graph_create_new_adj_node(src); 
-    new_node->next = g->array[dest].head; 
-    g->array[dest].head = new_node; 
-} 
- 
-void graph_print(struct graph* g) 
-{ 
-    int v; 
-    for (v = 0; v < g->n_vertices; ++v) 
-    { 
-        struct adj_node* p = g->array[v].head; 
-        printf("\n Adjacency list of vertex %d\n head ", v); 
-        while (p) 
-        { 
-            printf("-> %d", p->dest); 
-            p = p->next; 
-        } 
-        printf("\n"); 
-    } 
-}
-
 
 void initialize_search(struct graph *g)
 {
@@ -95,8 +30,6 @@ void initialize_search(struct graph *g)
 
 /* through the processs functions, can customize what the traversal does 
  * as it makes its official visit to each edge and each vertex */
-
-
 void process_vertex_late( int v )
 {
     // returns without action, since all processing done early on
@@ -132,7 +65,7 @@ void connected_components(struct graph *g)
     }
 }
 
-/* for connected components we would need helper functions  
+/* for connected components we would need different helper functions  
 void process_vertex_early(int v)
 {
     printf(" %d \n", v);
@@ -197,7 +130,8 @@ void bfs(struct graph *g, int start)
 }
 
 int main(void)
-{   struct graph *g;
+{   
+    struct graph *g;
     g = (struct graph*) malloc(sizeof *g);
 
     // initialise graph object

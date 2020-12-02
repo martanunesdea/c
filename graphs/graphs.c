@@ -45,7 +45,7 @@ struct graph* graph_initialize(int n_vertices)
     g->n_vertices = n_vertices;
     g->array = (struct adj_list*) malloc(n_vertices * sizeof(struct adj_list));
 
-    // initialise each adjacency list as empty
+    // initialise each list as empty
     for (int i = 0; i < n_vertices; i++)
     {
         g->array[i].head = NULL;
@@ -53,25 +53,19 @@ struct graph* graph_initialize(int n_vertices)
     return g;
 }
 
-// Adds an edge to an undirected graph 
 void graph_insert_edge(struct graph* g, int src, int dest) 
 { 
-    // Add an edge from src to dest.  A new node is  
-    // added to the adjacency list of src.  The node 
-    // is added at the beginning 
+    // Initialise new node and set adjacency to current head 
     struct adj_node* new_node = graph_create_new_adj_node(dest); 
     new_node->next = g->array[src].head; 
     g->array[src].head = new_node; 
   
-    // Since graph is undirected, add an edge from 
-    // dest to src also 
+    // Undirected graph: add edge from dest to src 
     new_node = graph_create_new_adj_node(src); 
     new_node->next = g->array[dest].head; 
     g->array[dest].head = new_node; 
 } 
-  
-// A utility function to print the adjacency list  
-// representation of graph 
+ 
 void graph_print(struct graph* g) 
 { 
     int v; 
@@ -89,7 +83,7 @@ void graph_print(struct graph* g)
 } 
 
 // Driver program to test above functions 
-int main() 
+void graphs_test(void) 
 { 
     // initialise graph object
     int vertices = 5; 
@@ -103,6 +97,4 @@ int main()
 
     // print the adjacency list representation of the above graph 
     graph_print(g); 
-  
-    return 0; 
 } 
