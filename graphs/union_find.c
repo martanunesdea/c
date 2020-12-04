@@ -8,6 +8,9 @@
  *   Compiler:  clang-1103.0.32.62 
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
 #define SET_SIZE 100
 
 struct set_union {
@@ -40,7 +43,7 @@ int find(struct set_union *s, int x)
     
 }
 
-int union_sets(struct set_union *s, int x)
+void union_sets(struct set_union *s, int s1, int s2)
 {
     int r1 = find(s, s1);
     int r2 = find(s, s2);
@@ -58,10 +61,20 @@ int union_sets(struct set_union *s, int x)
         s->size[r2] = s->size[r1] + s->size[r2];
         s->parent[r1] = r2;
     }
+
     
 }
 
 bool same_component(struct set_union *s, int s1, int s2)
 {
     return ( find(s, s1) == find(s, s2) );
+}
+
+
+int main ( void )
+{
+    struct set_union *s;
+    s = (struct set_union*) malloc ( sizeof(struct set_union*));
+    set_union_initialize(s, 5);
+
 }

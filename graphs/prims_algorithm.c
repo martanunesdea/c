@@ -59,9 +59,6 @@ void prim (struct graph *g, int start)
 
 }
 
-
-
-
 int main ( void )
 {
     return 0;

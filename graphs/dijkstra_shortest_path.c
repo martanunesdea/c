@@ -8,8 +8,10 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
+#include "graphs.h"
 
-void dijkstra(graph *g, int start)
+#define MAXINT 100
+void dijkstra(struct graph *g, int start)
 {
     int i;
     struct adj_node *p;
@@ -37,7 +39,7 @@ void dijkstra(graph *g, int start)
         p = g->array[v].head;
         while( p!= NULL) 
         {
-            w = p->y;
+            w = p->dest;
             weight = p->weight;
             if (distance[w] > (distance[v]+weight))
             {
