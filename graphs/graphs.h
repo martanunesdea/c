@@ -22,6 +22,7 @@ int parent[MAX+1];          /* discovery relation */
 struct adj_node {
     int dest;
     struct adj_node* next;
+    int weight;
 };
 
 struct adj_list{

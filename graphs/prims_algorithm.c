@@ -10,13 +10,14 @@
 #include <stdio.h>
 #include "graphs.h"
 
+#define MAXINT 1000
 
 void prim (struct graph *g, int start)
 {
-    struct adj_list *p;
-    bool intree[MAX+1];
-    int distance[MAX+1];
-
+    struct adj_node *p;
+    bool intree[MAX+1];             /* represent set of vertices in MST */
+    int distance[MAX+1];            /* distance of edges */ 
+    int parent[g->n_vertices];      /* store MST */
     int v;
     int w;
     int weight;
@@ -37,14 +38,15 @@ void prim (struct graph *g, int start)
         intree[v] = TRUE;
         p = g->array[v].head;
         while ( p != NULL ) {
-            w = p->head->next;
+            w = p->dest;
             weight = p->weight;
             if ( (distance[w] > weight) && ( intree[w] == FALSE) )
             {
                 distance[w] = weight;
                 parent[w] = v;
+                printf("Setting parent of %d to be %d\n", w, v);
             }
-            p = p->head->next;
+            p = p->next;
         }
         v = 1;
         dist = MAXINT;
@@ -61,5 +63,19 @@ void prim (struct graph *g, int start)
 
 int main ( void )
 {
+    // initialise graph object
+    int vertices = 3; 
+    struct graph* g;
+    g = graph_initialize(vertices); 
+    
+    graph_insert_edge(g, 0, 2);
+    graph_insert_edge(g, 0, 3);
+    graph_insert_edge(g, 3, 1);
+    graph_insert_edge(g, 1, 2);
+
+    // print the adjacency list representation of the above graph 
+    graph_print(g); 
+    prim(g, 2);
+
     return 0;
 }

@@ -57,13 +57,18 @@ void graph_insert_edge(struct graph* g, int src, int dest)
 { 
     // Initialise new node and set adjacency to current head 
     struct adj_node* new_node = graph_create_new_adj_node(dest); 
+    printf("INSERTING NEW NODE, WITH VALUE %d \n", new_node->dest);
     new_node->next = g->array[src].head; 
-    g->array[src].head = new_node; 
+    g->array[src].head = new_node;
   
     // Undirected graph: add edge from dest to src 
-    new_node = graph_create_new_adj_node(src); 
+    new_node = graph_create_new_adj_node(src);
+    printf("INSERTING NEW NODE, WITH VALUE %d \n", new_node->dest);
     new_node->next = g->array[dest].head; 
     g->array[dest].head = new_node; 
+    printf("INSERTING NEW NODE, WITH NEXT %d \n \n", g->array[dest].head);
+
+
 } 
  
 void graph_print(struct graph* g) 
@@ -72,9 +77,10 @@ void graph_print(struct graph* g)
     for (v = 0; v < g->n_vertices; ++v) 
     { 
         struct adj_node* p = g->array[v].head; 
-        printf("\n Adjacency list of vertex %d\n head ", v); 
+        printf("\n Adjacency list of vertex no. %d \n ", v);
+        printf("p dest %d \n", p->dest); 
         while (p) 
-        { 
+        {
             printf("-> %d", p->dest); 
             p = p->next; 
         } 
@@ -86,15 +92,25 @@ void graph_print(struct graph* g)
 void graphs_test(void) 
 { 
     // initialise graph object
-    int vertices = 5; 
+    int vertices = 3; 
     struct graph* g;
     g = graph_initialize(vertices); 
     
+    /*
     graph_insert_edge(g, 0, 1);
     graph_insert_edge(g, 0, 4);
     graph_insert_edge(g, 1, 2);
-    graph_insert_edge(g, 1, 4);
+    graph_insert_edge(g, 1, 4); */
+    graph_insert_edge(g, 0, 2);
+    graph_insert_edge(g, 0, 3);
+    //graph_insert_edge(g, 0, 3);
+    //graph_insert_edge(g, 0, 4); 
 
     // print the adjacency list representation of the above graph 
     graph_print(g); 
 } 
+
+int main ( void )
+{
+    graphs_test();
+}
