@@ -12,6 +12,14 @@ bool discovered[MAXV+1];    /* which vertices have been found */
 int parent[MAXV+1];         /* discovery relation */
 int nedges;
 
+/* for DFS */
+bool finished = false;
+/* DFS organises vertices by entry/exit times,
+ * and edgs into tree and back edges. */
+int entry_time[MAXV+1];    /* time we started discovering node */
+int exit_time[MAXV+1];     /* time we finished discovering one node */
+int time = 0;  
+
 typedef struct {
     int y;
     int weight;
@@ -33,6 +41,10 @@ void initialize_graph(graph *g, bool directed)
     g->nvertices = 0;
     g->nedges = 0;
     g->directed = directed;
+    if ( directed == true) 
+    {
+        printf("making a directed graph \n");
+    }
     nedges = 0;
 
     for (i = 1; i <= MAXV; i++)
@@ -114,19 +126,20 @@ void initialize_search(graph *g)
 void process_vertex_early( int v)
 {
     // something here 
-    //printf("Processing vertex early: %d \n", v);
-    printf(" %d", v);
+    printf("Processing vertex early: %d \n", v);
+    // printf(" %d", v); for connected components 
 }
 
 void process_edge(int x, int y)
 {
     // something here 
-    //nedges += 1;
-    // printf("Processing edge (%d, %d) \t\t Current edge count: %d\n", x, y, nedges);
+    nedges += 1;
+    printf("Processing edge (%d, %d) \t\t Current edge count: %d\n", x, y, nedges);
 }
 
 void process_vertex_late( int v )
 {
+    printf("Processing vertex %d \n", v);
     // empty
 }
 
@@ -146,7 +159,6 @@ void bfs(graph *g, int start)
 
         v = queue_get(&q);
         process_vertex_early(v);
-        processed[v] = true;
         p = g->edges[v];
 
         while ( p != NULL )
@@ -169,6 +181,8 @@ void bfs(graph *g, int start)
             p = (edgenode *) p->next; 
         }
         process_vertex_late(v);
+        processed[v] = true;
+
     }
 }
 
@@ -202,7 +216,71 @@ void connected_components( graph *g )
             printf("\n");
         }
     }
-} 
+}
+
+void dfs_process_edge(int x, int y)
+{
+    // something here 
+    nedges += 1;
+    printf("Processing edge (%d, %d) \t\t Current edge count: %d\n", x, y, nedges);
+}
+void dfs_process_vertex_early( int v)
+{
+    // something here 
+    printf("Processing vertex early: %d \n", v);
+    // printf(" %d", v); for connected components 
+}
+
+void dfs_process_vertex_late( int v )
+{
+    // empty
+}
+
+void dfs( graph *g, int v)
+{
+    edgenode *p;
+    int y;
+    
+    if ( finished ) 
+        return;     /* allow for search termination */
+    
+    discovered[v] = true;
+    time = time + 1;
+    entry_time[v] = time;
+
+    dfs_process_vertex_early(v);
+
+    p = g->edges[v];
+    while ( p != NULL )
+    {
+        y = p->y;
+
+        if ( discovered[y] == false )
+        {
+            parent[y] = v;
+            // dfs_process_edge(v, y); // this was duplicating how edges were processed
+            dfs(g, y);
+        }
+        if ( (processed[y] == false) || (g->directed) )
+        {
+            dfs_process_edge(v, y);
+        }
+        if ( finished ) 
+            // this value doesn't get attributed, inspect potential unintended behaviour
+            return;
+        
+        p = (edgenode *) p->next;
+    }
+
+    dfs_process_vertex_late(v);
+
+    time = time + 1;
+    exit_time[v] = time;
+
+    processed[v] = true;
+}
+
+
 
 int main(void)
 {
@@ -216,8 +294,8 @@ int main(void)
     printf("\n\n Printing graph \n");
     print_graph(g1);
 
-    /* 
-    printf("\n\n Trasversing with BFS \n");
+   
+ /*   printf("\n\n Trasversing with BFS \n");
     bfs(g1, 1);
 
     printf("\n\n Finding path\n");
@@ -225,7 +303,8 @@ int main(void)
     */
 
 
-    connected_components(g1); 
-
+ //   connected_components(g1); 
+     printf("\n\n Trasversing with DFS \n");
+    dfs(g1, 1);  
     return 0;
 }
