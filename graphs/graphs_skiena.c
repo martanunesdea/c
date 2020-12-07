@@ -114,14 +114,15 @@ void initialize_search(graph *g)
 void process_vertex_early( int v)
 {
     // something here 
-    printf("Processing vertex early: %d \n", v);
+    //printf("Processing vertex early: %d \n", v);
+    printf(" %d", v);
 }
 
 void process_edge(int x, int y)
 {
     // something here 
-    nedges += 1;
-    printf("Processing edge (%d, %d) \t\t Current edge count: %d\n", x, y, nedges);
+    //nedges += 1;
+    // printf("Processing edge (%d, %d) \t\t Current edge count: %d\n", x, y, nedges);
 }
 
 void process_vertex_late( int v )
@@ -161,8 +162,10 @@ void bfs(graph *g, int start)
                 queue_put(&q, y);
                 discovered[y] = true;
                 parent[y] = v;
+                // printf("Marking %d as discovered \t With parent %d \n", y, v);
             }
             // assumes all nodes in graph are connected
+            // printf("Moving on to next connected vertex \n");
             p = (edgenode *) p->next; 
         }
         process_vertex_late(v);
@@ -170,14 +173,59 @@ void bfs(graph *g, int start)
 }
 
 
+void find_path(int start, int end, int parents[])
+{
+    if ( (start == end) || (end == -1) )
+        printf("\n %d", start);
+    else {
+        find_path(start, parents[end], parents);
+        printf( " %d", end);
+    }
+    printf("\t");
+}
+
+void connected_components( graph *g )
+{
+    int c;
+    int i; 
+
+    initialize_search(g);
+
+    c = 0;
+    for ( i = 1; i <= g->nedges; i++ )  // edited: from nvertices to nedges 
+    {
+        if ( discovered[i] == false )
+        {
+            c += 1;
+            printf("Component %d: ", c);
+            bfs(g, i);
+            printf("\n");
+        }
+    }
+} 
+
 int main(void)
 {
     graph *g1;
     g1 = (graph *) malloc(sizeof *g1);
     bool directed = false;
+    printf("\n\n Reading in graph elements: \n");
     initialize_graph(g1, directed);
     read_graph(g1, directed);
+
+    printf("\n\n Printing graph \n");
     print_graph(g1);
+
+    /* 
+    printf("\n\n Trasversing with BFS \n");
     bfs(g1, 1);
+
+    printf("\n\n Finding path\n");
+    find_path(1, 9, parent); 
+    */
+
+
+    connected_components(g1); 
+
     return 0;
 }
