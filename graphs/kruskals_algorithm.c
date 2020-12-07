@@ -1,5 +1,5 @@
 /* 
- *      Title:  Prim's Minimum Spanning Tree Algorithm
+ *      Title:  Kruskal's Minimum Spanning Tree Algorithm
  *    Section:  Graphs
  *    Summary:  A greedy algorithm to find the minimum spanning tree
  *     Author:  Marta Nunes de Abreu

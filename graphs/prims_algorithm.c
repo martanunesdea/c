@@ -9,24 +9,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "graphs.h"
-
+#include "traversal.h"
 #define MAXINT 1000
 
-void prim (struct graph *g, int start)
+void prim (graph *g, int start)
 {
-    struct adj_node *p;
-    bool intree[MAX+1];             /* represent set of vertices in MST */
-    int distance[MAX+1];            /* distance of edges */ 
-    int parent[g->n_vertices];      /* store MST */
+    printf("\n\n----Prim's-----\n\n");
+    int i;
+    edgenode *p;
+    bool intree[MAXV+1];             /* represent set of vertices in MST */
+    int distance[MAXV+1];            /* distance of edges */ 
+    int parent[g->nvertices];      /* store MST */
     int v;
     int w;
     int weight;
     int dist;
 
     /* initialise arrays */
-    for (int i = 0; i <= g->n_vertices; i++)
+    for (i = 0; i <= g->nvertices; i++)
     {
-        intree[i] = FALSE;
+        intree[i] = false;
         distance[i] = MAXINT;
         parent[i] = -1;
     }
@@ -34,28 +36,46 @@ void prim (struct graph *g, int start)
     distance[start] = 0;
     v = start;
 
-    while ( intree[v] == FALSE) {
-        intree[v] = TRUE;
-        p = g->array[v].head;
+    while ( intree[v] == false) {
+        printf("\nTaking vertex %d \n", v);
+        intree[v] = true;
+        p = g->edges[v];
         while ( p != NULL ) {
-            w = p->dest;
+            w = p->y;
             weight = p->weight;
-            if ( (distance[w] > weight) && ( intree[w] == FALSE) )
+            printf("\nFrom %d: \t looking at adjacent %d with weight %d \n", v, w, weight);
+
+            if ( (distance[w] > weight) && ( intree[w] == false) )
             {
+                printf("Distance of element %d = %d now set to %d\n", w, distance[w], weight);
                 distance[w] = weight;
+                printf("Parent of element %d = %d now set to %d\n", w, parent[w], v);
                 parent[w] = v;
-                printf("Setting parent of %d to be %d\n", w, v);
+                printf("%d -> %d \n", v, w);
             }
-            p = p->next;
+            p = (edgenode *) p->next;
         }
         v = 1;
         dist = MAXINT;
-
-        for (int i = 1; i <= g->n_vertices; i++) {
-            if ( (intree[i] == FALSE) && (dist > distance[i]) ) {
+        for (i = 1; i <= g->nvertices; i++) {
+            // look for smallest edge from vertex 
+            if ( (intree[i] == false) && (dist > distance[i]) ) {
+                printf("current dist is %d \t distance of element %d = %d \n", dist, i, distance[i]);
                 dist = distance[i];
-                v = i;
+                v = i;   
             }
+        }
+    }
+
+    printf("\n ------ parent string ----- \n\n");
+    for (int i = 1; i <= g->nvertices; i++)
+    {
+        if ( parent[i] == (-1))
+        {
+            printf(" ( ) - ");
+        }
+        else {
+            printf(" (%d) - ", parent[i]);
         }
     }
 
@@ -65,17 +85,15 @@ int main ( void )
 {
     // initialise graph object
     int vertices = 3; 
-    struct graph* g;
-    g = graph_initialize(vertices); 
-    
-    graph_insert_edge(g, 0, 2);
-    graph_insert_edge(g, 0, 3);
-    graph_insert_edge(g, 3, 1);
-    graph_insert_edge(g, 1, 2);
+    graph* g;
+    g = (graph *) malloc(sizeof *g);
+    bool directed = true;
+    initialize_graph(g, directed); 
+    read_graph(g, directed);
 
     // print the adjacency list representation of the above graph 
-    graph_print(g); 
-    prim(g, 2);
+    print_graph(g); 
+    prim(g, 1);
 
     return 0;
 }

@@ -1,42 +1,37 @@
 /* 
- *      Title:  Header of Adjacency lists
+ *      Title:  Header for Graphs
  *    Section:  Graphs
- *    Summary:  Implementing adjacency lists
+ *    Summary:  Header of directional, non-directional and weighted adjacency lists
  *     Author:  Marta Nunes de Abreu
- *       Date:  29/12/2020
+ *       Date:  05/12/2020
  *   Compiler:  clang-1103.0.32.62 
  */
-#include <stdlib.h>
+#ifndef GRAPHS_H
+#define GRAPHS_H
+
 #include <stdio.h>
-#include <stdbool.h> 
+#include <stdlib.h>
+#include <stdbool.h>
 
-#define MAX 1000
-#define TRUE 1
-#define FALSE 0
+#define MAXV        1000
 
-bool processed[MAX+1];      /* vertices that have been processed */
-bool discovered[MAX+1];     /* vertices that have been found */
-int parent[MAX+1];          /* discovery relation */
+typedef struct {
+    int y;                      /* adjacency info */
+    int weight;                 /* edge weight, if any */
+    struct edgenode *next;      /* next edge in list */
+} edgenode;
 
+typedef struct {
+    edgenode *edges[MAXV+1];    /* adjacency info */
+    int degree[MAXV+1];         /* outdegree of each vertex */
+    int nvertices;              /* number of vertices in graph */
+    int nedges;                 /* number of edges in graph */
+    bool directed;              /* is the graph directed? */
+} graph;
 
-struct adj_node {
-    int dest;
-    struct adj_node* next;
-    int weight;
-};
+void initialize_graph(graph *g, bool directed);
+void insert_edge(graph *g, int x, int y, bool directed, int weight);
+void read_graph(graph *g, bool directed);
+void print_graph(graph *g);
 
-struct adj_list{
-    struct adj_node *head;
-};
-
-struct graph {
-    int n_vertices;
-    struct adj_list* array;
-};
-
-
-struct adj_node* graph_create_new_adj_node(int dest);
-struct graph* graph_initialize(int n_vertices);
-void graph_insert_edge(struct graph* g, int src, int dest);
-void graph_print(struct graph* g);
-void graphs_test(void);
+#endif

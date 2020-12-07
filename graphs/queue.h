@@ -6,6 +6,8 @@
  *           Date: 22/11/2020
  *       Compiler:  clang-1103.0.32.62 
  */
+#ifndef QUEUE_H
+#define QUEUE_H
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -23,3 +25,5 @@ void queue_initialize(struct queue *buffer);
 int queue_empty(struct queue *buffer);
 int get_queue_head(struct queue *buffer);
 int get_queue_tail(struct queue *buffer);
+
+#endif 

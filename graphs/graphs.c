@@ -1,116 +1,116 @@
 /* 
- *      Title:  Adjacency lists source file
+ *      Title:  Graphs
  *    Section:  Graphs
- *    Summary:  Implementing adjacency lists
+ *    Summary:  Directional, non-directional and weighted adjacency lists
  *     Author:  Marta Nunes de Abreu
- *       Date:  21/11/2020
+ *       Date:  05/12/2020
  *   Compiler:  clang-1103.0.32.62 
  */
-
-/* For each graph, we keep a count of the number of vertices
- * and assign each vertex a unique ID number from 1 to nvertices
- * Represent edges using array of linked lists */
-
-#include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h> 
+#include <stdlib.h>
+#include <stdbool.h>
+#include "queue.h"
+#include "graphs.h"
 
-#define MAX 1000
-
-struct adj_node {
-    int dest;
-    struct adj_node* next;
-};
-
-struct adj_list{
-    struct adj_node *head;
-};
-
-struct graph {
-    int n_vertices;
-    struct adj_list* array;
-};
-
-struct adj_node* graph_create_new_adj_node(int dest)
+void initialize_graph(graph *g, bool directed)
 {
-    struct adj_node* new_node = (struct adj_node*)malloc(sizeof(struct adj_node));
-    new_node->dest = dest;
-    new_node->next = NULL;
-    return new_node;
-}
+    int i;
 
-struct graph* graph_initialize(int n_vertices)
-{
-    struct graph* g = (struct graph*) malloc(sizeof(struct graph));
-    g->n_vertices = n_vertices;
-    g->array = (struct adj_list*) malloc(n_vertices * sizeof(struct adj_list));
-
-    // initialise each list as empty
-    for (int i = 0; i < n_vertices; i++)
+    g->nvertices = 0;
+    g->nedges = 0;
+    g->directed = directed;
+    if ( directed == true) 
     {
-        g->array[i].head = NULL;
+        printf("making a directed graph \n");
     }
-    return g;
+
+    for (i = 1; i <= MAXV; i++)
+    {
+        g->degree[i] = 0;
+        g->edges[i] = NULL;
+    }
 }
 
-void graph_insert_edge(struct graph* g, int src, int dest) 
-{ 
-    // Initialise new node and set adjacency to current head 
-    struct adj_node* new_node = graph_create_new_adj_node(dest); 
-    printf("INSERTING NEW NODE, WITH VALUE %d \n", new_node->dest);
-    new_node->next = g->array[src].head; 
-    g->array[src].head = new_node;
-  
-    // Undirected graph: add edge from dest to src 
-    new_node = graph_create_new_adj_node(src);
-    printf("INSERTING NEW NODE, WITH VALUE %d \n", new_node->dest);
-    new_node->next = g->array[dest].head; 
-    g->array[dest].head = new_node; 
-    printf("INSERTING NEW NODE, WITH NEXT %d \n \n", g->array[dest].head);
-
-
-} 
- 
-void graph_print(struct graph* g) 
-{ 
-    int v; 
-    for (v = 0; v < g->n_vertices; ++v) 
-    { 
-        struct adj_node* p = g->array[v].head; 
-        printf("\n Adjacency list of vertex no. %d \n ", v);
-        printf("p dest %d \n", p->dest); 
-        while (p) 
-        {
-            printf("-> %d", p->dest); 
-            p = p->next; 
-        } 
-        printf("\n"); 
-    } 
-} 
-
-// Driver program to test above functions 
-void graphs_test(void) 
-{ 
-    // initialise graph object
-    int vertices = 3; 
-    struct graph* g;
-    g = graph_initialize(vertices); 
-    
-    /*
-    graph_insert_edge(g, 0, 1);
-    graph_insert_edge(g, 0, 4);
-    graph_insert_edge(g, 1, 2);
-    graph_insert_edge(g, 1, 4); */
-    graph_insert_edge(g, 0, 2);
-    graph_insert_edge(g, 0, 3);
-    //graph_insert_edge(g, 0, 3);
-    //graph_insert_edge(g, 0, 4); 
-
-    // print the adjacency list representation of the above graph 
-    graph_print(g); 
-} 
-
-int main ( void )
+void insert_edge(graph *g, int x, int y, bool directed, int weight)
 {
-    graphs_test();
+    edgenode *p;
+    printf("Inserting edge between: (%d, %d)\n", x, y);
+    p = (edgenode *) malloc(sizeof(*p));
+    p->y = y;
+    p->next = (struct edgenode *) g->edges[x];
+    if ( weight > 0 )
+    {
+        p->weight = weight;
+    }
+    else {
+        p->weight = -1;
+    }
+
+    g->edges[x] = p;
+    g->degree[x] += 1;
+
+    if ( directed == false )
+    {
+        insert_edge(g, y, x, true, weight);
+    }
+    else
+    {
+        g->nedges += 1;
+    }
+
+}
+
+void read_graph(graph *g, bool directed)
+{
+    int i;
+    int m;
+    int x, y;
+    int w;          /* for weight */
+
+    initialize_graph(g, directed);
+
+    scanf("%d %d", &(g->nvertices), &m);
+    printf("Number of vertices: %d \n Number of edges: %d \n\n", g->nvertices, m);
+
+    for (i = 1; i <= m; i++)
+    {
+        scanf("%d %d %d", &x, &y, &w);
+        insert_edge(g, x, y, directed, w);
+    }
+}
+
+
+void print_graph(graph *g)
+{
+    int i;
+    edgenode *p;
+
+    for ( i = 1; i <= g->nvertices; i++)
+    {
+        printf("%d: ", i);
+        p = g->edges[i];
+        while ( p != NULL )
+        {
+            printf(" %d", p->y);
+            p = (edgenode*) p->next;
+        }
+        printf("\n");
+    }
+}
+
+
+
+int test_graph(void)
+{
+    graph *g1;
+    g1 = (graph *) malloc(sizeof *g1);
+    bool directed = false;
+    printf("\n\n Reading in graph elements: \n");
+    initialize_graph(g1, directed);
+    read_graph(g1, directed);
+
+    printf("\n\n Printing graph \n");
+    print_graph(g1);
+
+    return 0;
 }
