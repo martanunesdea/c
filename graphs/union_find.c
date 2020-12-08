@@ -11,16 +11,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "union_find.h"
 #define SET_SIZE 100
 
-struct set_union {
-    int parent[SET_SIZE+1]; // parent element
-    int size[SET_SIZE+1];   // number of elements in subtree i
-    int n;                  // number of elements in set
-};
 
-
-void set_union_initialize(struct set_union *s, int n)
+void set_union_initialize(set_union *s, int n)
 {
     for( int i = 0; i <= n; i++ )
     {
@@ -34,7 +29,7 @@ void set_union_initialize(struct set_union *s, int n)
 // find: find the root of tree containing element i
 // by walking up the parent pointers until nothing's left
 // return to label of the root
-int find(struct set_union *s, int x)
+int find(set_union *s, int x)
 {
     if ( s->parent[x] == x )
         return (x);
@@ -43,7 +38,7 @@ int find(struct set_union *s, int x)
     
 }
 
-void union_sets(struct set_union *s, int s1, int s2)
+void union_sets(set_union *s, int s1, int s2)
 {
     int r1 = find(s, s1);
     int r2 = find(s, s2);
@@ -65,16 +60,16 @@ void union_sets(struct set_union *s, int s1, int s2)
     
 }
 
-bool same_component(struct set_union *s, int s1, int s2)
+bool same_component(set_union *s, int s1, int s2)
 {
     return ( find(s, s1) == find(s, s2) );
 }
 
 
-int main ( void )
+int set_union_test ( void )
 {
-    struct set_union *s;
-    s = (struct set_union*) malloc ( sizeof(struct set_union*));
+    set_union *s;
+    s = (set_union*) malloc ( sizeof(set_union*));
     set_union_initialize(s, 5);
 
 }

@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "graphs.h"
 #include "traversal.h"
+#include "union_find.h"
 #define MAXINT 1000
 
 void prim (graph *g, int start)
@@ -51,7 +52,6 @@ void prim (graph *g, int start)
                 distance[w] = weight;
                 printf("Parent of element %d = %d now set to %d\n", w, parent[w], v);
                 parent[w] = v;
-                printf("%d -> %d \n", v, w);
             }
             p = (edgenode *) p->next;
         }
@@ -60,7 +60,7 @@ void prim (graph *g, int start)
         for (i = 1; i <= g->nvertices; i++) {
             // look for smallest edge from vertex 
             if ( (intree[i] == false) && (dist > distance[i]) ) {
-                printf("current dist is %d \t distance of element %d = %d \n", dist, i, distance[i]);
+                printf("Current dist is %d \t distance of element %d = %d \n", dist, i, distance[i]);
                 dist = distance[i];
                 v = i;   
             }
@@ -80,6 +80,35 @@ void prim (graph *g, int start)
     }
 
 }
+
+void to_edge_array(graph *g, edge_pair *e)
+{
+    // sort edges by increasing cost
+}
+
+void kruskal (graph *g)
+{
+    int i;                      /* counter */
+    set_union s;                /* set union data structure */
+    edge_pair e[MAXV+1];        /* array of edges data structure */
+    bool weight_compare();
+
+    set_union_init(&s, g->nvertices);
+    
+    to_edge_array(g, e);        /* sort edges by increasing cost */
+    qsort(&e, g->nedges, sizeof(edge_pair), weight_compare);
+
+    for ( i = 0; i < (g->nedges); i++ )
+    {
+        if ( !sampe_component(s, e[i].x, e[i].y) )
+        {
+            printf("Edge (%d, %d) in MST \n", e[i].x, e[i].y);
+            union_sets(&s, e[i].x, e[i].y);
+        }
+    }
+}
+
+
 
 int main ( void )
 {

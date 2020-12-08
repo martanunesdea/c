@@ -29,6 +29,12 @@ typedef struct {
     bool directed;              /* is the graph directed? */
 } graph;
 
+typedef struct {
+    int x;
+    int y;
+} edge_pair;
+
+
 void initialize_graph(graph *g, bool directed);
 void insert_edge(graph *g, int x, int y, bool directed, int weight);
 void read_graph(graph *g, bool directed);
