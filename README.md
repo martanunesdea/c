@@ -12,8 +12,6 @@ This folder contains common search algorithms (sequential search, binary search,
 3. Graph algorithms:
 This folder is organised in the following structure:
     - *graphs.c* includes adjacency lists as implemented in Skiena's manual.
-
-Additional programs are named according to their purpose. 
     - *traversal.c* includes BFS, DFS and some applications.
     - *minimum_spanning_trees.c* includes Prim's and Kruskal's algorithms. 
     - *shortest_path.c* includes Dijkstra's algorithm.
