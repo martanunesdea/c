@@ -12,10 +12,12 @@ This folder contains common search algorithms (sequential search, binary search,
 3. Graph algorithms:
 This folder is organised in the following structure:
     - *graphs.c* includes adjacency lists as implemented in Skiena's manual.
+
 Additional programs are named according to their purpose. 
     - *traversal.c* includes BFS, DFS and some applications.
     - *minimum_spanning_trees.c* includes Prim's and Kruskal's algorithms. 
     - *shortest_path.c* includes Dijkstra's algorithm.
+
 Two additional folders store less relevant material: the "Sedgewick" folder is the implementation of adjancacy matrices and lists as seen in Sedgewick "Algorithm in C". The "alternative" folder stores some other implementations I've seen online and wanted to test and compare.
 4. String Processing:
 Will shortly be added. 
