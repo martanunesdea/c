@@ -1,7 +1,7 @@
 /* 
- *      Title:  Prim's Minimum Spanning Tree Algorithm
+ *      Title:  Minimum Spanning Trees
  *    Section:  Graphs
- *    Summary:  A greedy algorithm to find the minimum spanning tree
+ *    Summary:  Algorithms to find the minimum spanning tree
  *     Author:  Marta Nunes de Abreu
  *       Date:  02/12/2020
  *   Compiler:  clang-1103.0.32.62 
