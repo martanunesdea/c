@@ -18,6 +18,4 @@ This folder is organised in the following structure:
 
 Two additional folders store less relevant material: the "Sedgewick" folder is the implementation of adjancacy matrices and lists as seen in Sedgewick "Algorithm in C". The "alternative" folder stores some other implementations I've seen online and wanted to test and compare.
 
-
-
 Feel free to pull this repository and use it for your own practice, or to edit and contribute with additional implementations.
