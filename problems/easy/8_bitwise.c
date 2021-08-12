@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 //Complete the following function.
+
 void calculate_the_maximum(int n, int k) {
     int maxAnd = 0;
     int maxOr = 0;
@@ -22,14 +23,14 @@ void calculate_the_maximum(int n, int k) {
         }
     }
 
-    printf("%d\n%d\n%d\n", maxAnd, maxOr, maxXor);
+    printf("%d\n%d\n%d\n", maxAnd, maxOr, maxXor); 
 }
 
 int main() {
     int n, k;
   
     scanf("%d %d", &n, &k);
-    int max = calculate_the_maximum(n, k);
+    calculate_the_maximum(n, k);
     
     return 0;
 }

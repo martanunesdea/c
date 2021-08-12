@@ -6,14 +6,21 @@
 int main() {
 	
     int n;
+    int numbers[10]; 
     scanf("%d", &n);
+    printf("%d\n\n", n);
     //Complete the code to calculate the sum of the five digits on n.
-    int length = (int)sizeof(n);
     int sum = 0;
+    int i = 0;
 
-    for (int i = 0; i < length; ++i)
+    while (1)
     {
-        ;
+        numbers[i] = (n%10);
+        sum += numbers[i];
+        n = n/10;
+        i++;
+        if (n <= 0) break;
     }
+    printf("%d\n", sum);
     return 0;
 }
